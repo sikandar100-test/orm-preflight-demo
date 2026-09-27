@@ -1,0 +1,24 @@
+name: Migrations
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  orm-preflight:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # For the SARIF upload to code scanning. GitHub never grants it to pull requests from
+      # forks, and the action skips the upload there.
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # for changed-since
+          persist-credentials: false
+      - uses: sikandar100/orm-preflight@v0.2.0
+        with:
+          changed-since: origin/${{ github.base_ref }}
+          sarif: true
